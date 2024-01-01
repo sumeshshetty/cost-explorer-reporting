@@ -1,0 +1,61 @@
+queries:
+  trend_month_by_month_with_credits:
+    query:
+      TimePeriod:
+        Start: 2023-01-01
+        End: 2023-12-30
+      Granularity: MONTHLY
+      Metrics:
+        - UnblendedCost
+
+  trend_month_by_month_without_credits:
+    query:
+      TimePeriod:
+        Start: 2023-01-01
+        End: 2023-12-30
+      Granularity: MONTHLY
+      Metrics:
+        - UnblendedCost
+      Filter:
+        Not:
+          Dimensions:
+            Key: RECORD_TYPE
+            Values:
+              - Credit
+  
+  trend_month_by_month_with_credits_and_usage:
+    query:
+      TimePeriod:
+        Start: 2023-01-01
+        End: 2023-12-30
+      Granularity: MONTHLY
+      Metrics:
+        - UnblendedCost
+      GroupBy:
+        - Type: DIMENSION
+          Key: RECORD_TYPE
+      Filter:
+        Dimensions:
+          Key: RECORD_TYPE
+          Values:
+            - Credit
+            - Usage
+
+  
+  top_services_by_cost_for_3_months:
+    query:
+      TimePeriod:
+        Start: 2023-08-01
+        End: 2023-10-31
+      Granularity: MONTHLY
+      Metrics:
+        - UnblendedCost
+      GroupBy:
+        - Type: DIMENSION
+          Key: SERVICE
+      Filter:
+        Not:
+          Dimensions:
+            Key: RECORD_TYPE
+            Values:
+              - Credit
