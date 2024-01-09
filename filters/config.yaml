@@ -1,0 +1,234 @@
+queries:
+    trend_month_by_month_with_credits:
+        query:
+            TimePeriod:
+                Start: 2023-01-01
+                End: 2023-12-31
+            Granularity: MONTHLY
+            Metrics:
+                - UnblendedCost
+
+    trend_month_by_month_without_credits:
+        query:
+            TimePeriod:
+                Start: 2023-01-01
+                End: 2023-12-30
+            Granularity: MONTHLY
+            Metrics:
+                - UnblendedCost
+            Filter:
+                Not:
+                    Dimensions:
+                        Key: RECORD_TYPE
+                        Values:
+                            - Credit
+                            
+    top_services_by_cost_for_3_months:
+        query: 
+            TimePeriod: 
+                Start: 2023-09-01
+                End: 2023-12-31
+            Granularity: MONTHLY
+            Metrics: 
+                - UnblendedCost
+            GroupBy: 
+                - Type: DIMENSION
+                  Key: SERVICE
+            Filter: 
+                Not: 
+                    Dimensions: 
+                        Key: RECORD_TYPE
+                        Values:
+                            - Credit
+
+    last_month_spend_with_credit:
+        query: 
+            TimePeriod: 
+                Start: 2023-12-01
+                End: 2023-12-31
+            Granularity: MONTHLY
+            Metrics:
+                - UnblendedCost
+            GroupBy:
+                - Type: DIMENSION
+                  Key: SERVICE
+            
+
+    charge_type_by_cost_for_3_months: 
+        query: 
+            TimePeriod: 
+                Start: 2023-09-01
+                End: 2023-12-31
+            Granularity: MONTHLY
+            Metrics:
+                - UnblendedCost
+            GroupBy: 
+                -  Type: DIMENSION
+                   Key: RECORD_TYPE
+            
+
+
+    api_operation_by_cost_for_3_months:
+        query: 
+            TimePeriod: 
+                Start: 2023-09-01
+                End: 2023-12-31
+            Granularity: MONTHLY
+            Metrics: 
+               - UnblendedCost
+            GroupBy:
+                - Type: DIMENSION
+                  Key: OPERATION
+            
+        
+
+    usage_by_cost_for_3_months:
+        query:
+            TimePeriod: 
+                Start: 2023-09-01
+                End: 2023-12-31
+            Granularity: MONTHLY
+            Metrics: 
+                - UnblendedCost
+            GroupBy: 
+                - Type: DIMENSION
+                  Key: USAGE_TYPE
+            
+
+
+    s3_spends_by_cost_for_3_months:
+        query:
+            TimePeriod:
+                Start: 2023-09-01
+                End: 2023-12-31
+            Granularity: MONTHLY
+            Metrics:
+                - UnblendedCost
+                - UsageQuantity
+            GroupBy: 
+                - Type: DIMENSION
+                  Key: SERVICE
+            Filter: 
+                Dimensions:
+                    Key: USAGE_TYPE_GROUP
+                    Values:
+                        - 'S3: Storage - Standard'
+
+
+    ebs_spends_by_cost_for_3_months:
+        query:
+            TimePeriod:
+                Start: 2023-09-01
+                End: 2023-12-31
+            Granularity: MONTHLY
+            Metrics:
+               - UnblendedCost
+               - UsageQuantity
+            GroupBy:
+                - Type: DIMENSION
+                  Key: USAGE_TYPE
+            Filter: 
+                Dimensions:
+                    Key: USAGE_TYPE
+                    Values:
+                        - APS3-EBS:VolumeUsage.gp3
+                        - APS3-EBS:VolumeUsage.gp2
+    
+    linked_account_by_cost_for_3_months:
+        query:
+            TimePeriod:
+                Start: 2023-09-01
+                End: 2023-12-31
+            Granularity: MONTHLY
+            GroupBy:
+                - Type: DIMENSION
+                  Key: LINKED_ACCOUNT
+            Metrics:
+                - UnblendedCost
+
+    regions_by_cost_for_3_months: 
+        query:
+            TimePeriod:
+                Start: 2023-09-01
+                End: 2023-12-31
+            Granularity: MONTHLY
+            Metrics:
+                - UnblendedCost
+            GroupBy: 
+                - Type: DIMENSION
+                  Key: REGION
+            
+
+    availbility_zone_by_cost_for_3_months:
+        query:
+            TimePeriod:
+                Start: 2023-09-01
+                End: 2023-12-31
+            Granularity: MONTHLY
+            Metrics:
+            - UnblendedCost
+            GroupBy:
+                -  Type: DIMENSION
+                   Key: AZ
+            
+
+    db_engine_by_cost_for_3_months: 
+        query:
+            TimePeriod:
+                Start: 2023-09-01
+                End: 2023-12-31
+            Granularity: MONTHLY
+            Metrics:
+                - UnblendedCost
+            GroupBy:
+                -  Type: DIMENSION
+                   Key: DATABASE_ENGINE
+            Filter:
+                Dimensions:
+                    Key: DATABASE_ENGINE
+                    Values: 
+                        - Amazon DocumentDB
+                        - MySQL
+                        - PostgreSQL
+            
+    platform_by_cost_for_3_months:
+        query:
+            TimePeriod:
+                Start: 2023-09-01
+                End: 2023-12-31
+            Granularity: MONTHLY
+            Metrics:
+               - UnblendedCost
+            GroupBy:
+                - Type: DIMENSION
+                  Key: PLATFORM
+            
+    ebs_snapshotUsage_by_cost_for_3_months:
+        query:
+            TimePeriod:
+                Start: 2023-09-01
+                End: 2023-12-31
+            Granularity: MONTHLY
+            Metrics:
+                - UnblendedCost
+            GroupBy:
+                -  Type: DIMENSION
+                   Key: USAGE_TYPE
+            Filter:
+                Dimensions:
+                    Key: USAGE_TYPE
+                    Values:
+                        - APS3-EBS:SnapshotUsage
+
+    purchase_by_cost_for_3_months:
+        query:
+            TimePeriod:
+                Start: 2023-09-01
+                End: 2023-12-31
+            Granularity: MONTHLY
+            Metrics:
+               - UnblendedCost
+            GroupBy:
+                -  Type: DIMENSION
+                   Key: PURCHASE_TYPE
+            
