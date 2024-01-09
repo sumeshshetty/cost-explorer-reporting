@@ -3,13 +3,12 @@ import boto3
 import pandas as pd
 from io import StringIO
 import yaml
+import os
 
 ce_client = boto3.client('ce')
-s3 = boto3.client('s3')
-bucket_name="cost-explorer-graghical-data-generation"
 
 
-def generic_report_creation(dict_response, reportName):
+def generic_report_creation(dict_response, reportName,folder):
     print(reportName)
     print(dict_response)
     var_list = []
@@ -157,15 +156,16 @@ def generic_report_creation(dict_response, reportName):
                             )
 
     df = pd.DataFrame(var_list)
-    csv_buffer = StringIO()
-    csv_file_path = f'reports/{reportName}.csv'
-    df.to_csv(csv_buffer, index=False)
-    s3.put_object(Body=csv_buffer.getvalue(), Bucket=bucket_name, Key=csv_file_path)
+    filename=reportName+".csv"
+    folder = os.path.join('..', folder)
+    os.makedirs(folder, exist_ok=True)  
+    csv_file_path = os.path.join(folder, filename)
+    df.to_csv(csv_file_path, index=False)
     print(f'CSV file "{csv_file_path}" created successfully.')
     # df.to_csv(f"{reportName}.csv", encoding="utf-8", index=False)
 
 
-def run_query(query_name, query_filters):
+def run_query(query_name, query_filters,folder):
     # Update time period in filters
     query_filters['query']['TimePeriod']['Start'] = query_filters['query']['TimePeriod']['Start'].strftime('%Y-%m-%d')
     query_filters['query']['TimePeriod']['End'] = query_filters['query']['TimePeriod']['End'].strftime('%Y-%m-%d')
@@ -174,45 +174,20 @@ def run_query(query_name, query_filters):
     
     response = ce_client.get_cost_and_usage(**query_filters['query'])
     
-    generic_report_creation(response, query_name)
+    generic_report_creation(response, query_name,folder)
     
-
-def creating_csv_from_data(report_data,csv_name):
-    
-    data = []
-    for result in report_data['ResultsByTime']:
-        time_period = result['TimePeriod']
-        usage_amount = result['Total']['UnblendedCost']['Amount']
-        
-        data.append({
-            'TimePeriod.Start': time_period['Start'],
-            'TimePeriod.End': time_period['End'],
-            'usage_Amount': usage_amount,
-        })
-        
-    json_data = str(data).replace('\n', '').replace(' ', '').replace("'",'"')
-    df = pd.json_normalize(json.loads(json_data))
-    csv_buffer = StringIO()
-    csv_file_path = 'reports/output.csv'
-    df.to_csv(csv_buffer, index=False)
-    s3.put_object(Body=csv_buffer.getvalue(), Bucket=bucket_name, Key=csv_file_path)
-    print(f'CSV file "{csv_file_path}" created successfully.')
-    
+ 
 
 
-
-def lambda_handler(event, context):
-    print(event)
-
-    ########## Reading Yaml File ########################
-
+if __name__ == "__main__":
     # Load filters from YAML file
-    with open('config.yaml', 'r') as yaml_file:
+    with open('../filters/config.yaml', 'r') as yaml_file:
         config = yaml.safe_load(yaml_file)
 
     # Iterate through each query in the YAML file
+    folder = 'reports'
     for query_name, query_filters in config['queries'].items():
-        run_query(query_name, query_filters)
+        run_query(query_name, query_filters,folder)
     
     
     
